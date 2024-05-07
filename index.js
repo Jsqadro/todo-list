@@ -87,6 +87,7 @@ class Task extends Component {
         super();
         this.taskText = taskText;
         this.buttonColor = 'green';
+        this.btn = null;
         this.lastClickTime = 0;
         this.onDeleteTask = onDeleteTask;
         this.onDeleteTaskHandler = this.onDeleteTaskHandler.bind(this);
@@ -100,12 +101,9 @@ class Task extends Component {
         const elapsedTime = currentTime - this.lastClickTime;
 
         if (elapsedTime < 1000 && this.state.firstClick === true) {
-            console.log('chlen');
             this.onDeleteTask();
             this.resetState();
         } else {
-            console.log('hyi');
-
             this.state = {...this.state, firstClick: true};
             this.buttonColor = 'red';
             setTimeout(() => {
@@ -114,14 +112,19 @@ class Task extends Component {
         }
 
         this.lastClickTime = currentTime;
-        console.log(this.buttonColor);
-        // this.buttonColor === 'red' ? this.update() :
-        this.render();
+        if (this.buttonColor === 'red') {
+            this.btn.style.backgroundColor = this.buttonColor;
+        } else {
+            this.btn.style.backgroundColor = this.buttonColor;
+            this.update();
+        }
     }
+
 
     resetState() {
         this.buttonColor = 'green';
         this.state = {...this.state, firstClick: false};
+        this.btn.style.backgroundColor = this.buttonColor;
     }
 
     render() {
@@ -134,13 +137,18 @@ class Task extends Component {
                 label.classList.remove('completed');
             }
         });
+
+        let btn = createElement("button", {
+            onclick: this.onDeleteTaskHandler,
+        }, "🗑");
+        btn.style.backgroundColor = 'green';
+
+        this.btn = btn;
+
         return createElement('li', {}, [
             checkbox,
             createElement("label", {}, this.taskText),
-            createElement("button", {
-                onclick: this.onDeleteTaskHandler,
-                style: `backgroundColor: ${this.buttonColor}`,
-            }, "🗑")
+            btn,
         ]);
     }
 }
